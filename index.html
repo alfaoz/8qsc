@@ -399,6 +399,7 @@
         </div>
         <div class="controls">
             <button class="secondary" id="clearBtn">CLEAR ALL</button>
+            <button class="secondary" id="rulesBtn">RULES PDF</button>
         </div>
     </header>
 
@@ -501,8 +502,8 @@
         const rankSelector = document.getElementById('rankSelector');
         const activeSlotNum = document.getElementById('activeSlotNum');
         const dupWarning = document.getElementById('dupWarning');
-        const randomBtn = document.getElementById('randomBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const rulesBtn = document.getElementById('rulesBtn');
 
         // Score elements
         const totalScore = document.getElementById('totalScore');
@@ -591,9 +592,18 @@
         }
 
         function attachEventListeners() {
-            randomBtn.addEventListener('click', generateRandomHand);
             clearBtn.addEventListener('click', clearAllCards);
+            rulesBtn.addEventListener('click', downloadRules);
             selectorBackdrop.addEventListener('click', closeSelector);
+        }
+
+        function downloadRules() {
+            const link = document.createElement('a');
+            link.href = 'https://raw.githubusercontent.com/alfaoz/8qsc/main/8quilibrium.pdf';
+            link.download = '8quilibrium-rules.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // ===== CARD SELECTION =====
