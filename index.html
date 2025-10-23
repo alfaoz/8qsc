@@ -12,28 +12,38 @@
         }
 
         :root {
-            --black: #000;
-            --white: #fff;
-            --gray-dark: #1a1a1a;
-            --gray-mid: #999;
-            --gray-light: #333;
+            --cream: #faf8f3;
+            --navy: #2c3e50;
+            --burgundy: #660033;
+            --forest: #2d5016;
+            --gold: #d4af37;
+            --light-blue: #e3f2fd;
+            --light-green: #e8f5e9;
+            --light-red: #ffebee;
+            --light-gold: #fff9e6;
+            --border-color: #b8a88a;
+            --text-primary: #2c3e50;
+            --text-secondary: #2c3e50;
             --spacing: 16px;
+            --card-red: #dc143c;
+            --card-blue: #0088d9;
         }
 
         body {
-            font-family: 'Courier New', Consolas, Monaco, monospace;
-            background: var(--black);
-            color: var(--white);
-            line-height: 1.5;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            background: var(--cream);
+            color: var(--text-primary);
+            line-height: 1.6;
             padding: var(--spacing);
             max-width: 600px;
             margin: 0 auto;
         }
 
         header {
-            border: 2px solid var(--white);
+            border: 2px solid var(--burgundy);
             padding: var(--spacing);
             margin-bottom: var(--spacing);
+            background: var(--light-red);
         }
 
         h1 {
@@ -41,11 +51,12 @@
             font-weight: bold;
             margin-bottom: 8px;
             letter-spacing: -0.5px;
+            color: var(--burgundy);
         }
 
         .subtitle {
             font-size: 12px;
-            color: var(--gray-mid);
+            color: var(--text-secondary);
             margin-bottom: 12px;
         }
 
@@ -59,16 +70,17 @@
             font-family: inherit;
             font-size: 14px;
             padding: 8px 12px;
-            background: var(--white);
-            color: var(--black);
-            border: 2px solid var(--white);
+            background: var(--burgundy);
+            color: var(--cream);
+            border: 2px solid var(--burgundy);
             cursor: pointer;
             transition: all 0.2s;
         }
 
         button:hover {
-            background: var(--black);
-            color: var(--white);
+            background: var(--navy);
+            border-color: var(--navy);
+            color: var(--cream);
         }
 
         button:active {
@@ -76,20 +88,21 @@
         }
 
         button.secondary {
-            background: var(--black);
-            color: var(--white);
-            border: 2px solid var(--white);
+            background: var(--cream);
+            color: var(--burgundy);
+            border: 2px solid var(--burgundy);
         }
 
         button.secondary:hover {
-            background: var(--white);
-            color: var(--black);
+            background: var(--burgundy);
+            color: var(--cream);
         }
 
         .section {
-            border: 2px solid var(--white);
+            border: 2px solid var(--border-color);
             padding: var(--spacing);
             margin-bottom: var(--spacing);
+            background: white;
         }
 
         .section-title {
@@ -98,6 +111,7 @@
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: var(--navy);
         }
 
         /* Card Grid - Fixed 2 columns for mobile */
@@ -109,33 +123,35 @@
         }
 
         .card-slot {
-            border: 2px solid var(--white);
+            border: 2px solid var(--border-color);
             padding: 12px;
             min-height: 100px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
-            background: var(--black);
+            background: var(--light-gold);
             transition: background 0.2s;
             position: relative;
         }
 
         .card-slot:hover {
-            background: var(--gray-light);
+            background: var(--light-blue);
         }
 
         .card-slot.active {
-            background: var(--white);
-            color: var(--black);
+            background: var(--gold);
+            color: var(--navy);
+            border-color: var(--gold);
         }
 
         .card-slot.has-card {
             cursor: default;
+            background: white;
         }
 
         .card-slot.has-card:hover {
-            background: var(--black);
+            background: white;
         }
 
         .card-display {
@@ -146,21 +162,21 @@
         }
 
         .card-display.red {
-            color: var(--white);
+            color: var(--card-red);
         }
 
         .card-display.black {
-            color: var(--white);
+            color: var(--card-blue);
         }
 
         .card-label {
             font-size: 11px;
             text-align: center;
-            color: var(--gray-mid);
+            color: var(--text-secondary);
         }
 
         .card-slot.has-card .card-label {
-            color: var(--white);
+            color: var(--text-secondary);
         }
 
         .card-clear {
@@ -169,15 +185,15 @@
             right: 4px;
             font-size: 11px;
             padding: 2px 6px;
-            background: var(--black);
-            border: 1px solid var(--white);
-            color: var(--white);
+            background: var(--burgundy);
+            border: 1px solid var(--burgundy);
+            color: var(--cream);
             cursor: pointer;
         }
 
         .card-clear:hover {
-            background: var(--white);
-            color: var(--black);
+            background: var(--navy);
+            border-color: var(--navy);
         }
 
         /* Floating Keyboard-Style Selector */
@@ -188,7 +204,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(44, 62, 80, 0.7);
             z-index: 998;
             backdrop-filter: blur(2px);
         }
@@ -204,14 +220,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            border: 2px solid var(--white);
+            border: 2px solid var(--border-color);
             border-bottom: none;
             padding: 16px;
-            background: var(--gray-dark);
+            background: var(--cream);
             z-index: 999;
             max-width: 600px;
             margin: 0 auto;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -4px 20px rgba(44, 62, 80, 0.3);
         }
 
         .card-selector.active {
@@ -242,7 +258,7 @@
             font-weight: bold;
             margin-bottom: 8px;
             text-transform: uppercase;
-            color: var(--white);
+            color: var(--navy);
         }
 
         .suit-selector {
@@ -255,21 +271,21 @@
         .suit-btn {
             font-size: 24px;
             padding: 12px;
-            background: var(--black);
-            color: var(--white);
-            border: 2px solid var(--white);
+            background: white;
+            color: var(--navy);
+            border: 2px solid var(--border-color);
             cursor: pointer;
             text-align: center;
         }
 
         .suit-btn:hover {
-            background: var(--gray-light);
+            background: var(--light-blue);
         }
 
         .suit-btn.selected {
-            background: var(--white);
-            color: var(--black);
-            border: 2px solid var(--white);
+            background: var(--forest);
+            color: var(--cream);
+            border: 2px solid var(--forest);
         }
 
         .rank-selector {
@@ -281,9 +297,9 @@
         .rank-btn {
             font-size: 14px;
             padding: 10px 12px;
-            background: var(--black);
-            color: var(--white);
-            border: 2px solid var(--white);
+            background: white;
+            color: var(--navy);
+            border: 2px solid var(--border-color);
             cursor: pointer;
             text-align: center;
             min-width: 60px;
@@ -291,13 +307,13 @@
         }
 
         .rank-btn:hover {
-            background: var(--gray-light);
+            background: var(--light-blue);
         }
 
         .rank-btn.selected {
-            background: var(--white);
-            color: var(--black);
-            border: 2px solid var(--white);
+            background: var(--forest);
+            color: var(--cream);
+            border: 2px solid var(--forest);
         }
 
         /* Score Display */
@@ -313,9 +329,10 @@
         }
 
         .score-card {
-            border: 2px solid var(--white);
+            border: 2px solid var(--border-color);
             padding: 12px;
             text-align: center;
+            background: var(--light-green);
         }
 
         .score-title {
@@ -323,26 +340,27 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 4px;
-            color: var(--gray-mid);
+            color: var(--text-secondary);
         }
 
         .score-value {
             font-size: 36px;
             font-weight: bold;
             margin-bottom: 4px;
+            color: var(--forest);
         }
 
         .score-detail {
             font-size: 10px;
-            color: var(--gray-mid);
+            color: var(--text-secondary);
         }
 
         /* Stats Display */
         .stats {
             font-size: 12px;
             padding: 8px;
-            border: 1px solid var(--white);
-            background: var(--gray-dark);
+            border: 1px solid var(--border-color);
+            background: var(--light-gold);
         }
 
         .stat-line {
@@ -357,11 +375,12 @@
         .warning {
             display: none;
             padding: 8px;
-            border: 2px solid var(--white);
-            background: var(--white);
-            color: var(--black);
+            border: 2px solid var(--burgundy);
+            background: var(--light-red);
+            color: var(--burgundy);
             font-size: 12px;
             margin-bottom: 12px;
+            font-weight: bold;
         }
 
         .warning.show {
@@ -371,10 +390,10 @@
         /* Footer */
         footer {
             font-size: 11px;
-            color: var(--gray-mid);
+            color: var(--text-secondary);
             text-align: center;
             padding: var(--spacing);
-            border-top: 1px solid var(--gray-light);
+            border-top: 1px solid var(--border-color);
         }
 
         /* Responsive adjustments */
@@ -457,7 +476,7 @@
     </div>
 
     <footer>
-        8 quilibrium is a game by alfa ozaltin.
+        8 quilibrium - a game by alfa ozaltin.
     </footer>
 
     <script>
@@ -576,7 +595,7 @@
             const divider = document.createElement('div');
             divider.style.flexBasis = '100%';
             divider.style.height = '0';
-            divider.style.borderTop = '1px solid white';
+            divider.style.borderTop = '1px solid #b8a88a';
             divider.style.margin = '8px 0';
             rankSelector.appendChild(divider);
             
@@ -873,14 +892,20 @@
         }
 
         function updateStatsDisplay(stats) {
-            suitCounts.textContent = 
-                `♥${stats.counts.H} ♦${stats.counts.D} ♣${stats.counts.C} ♠${stats.counts.S}`;
-            colorCounts.textContent = 
+            // Create styled suit counts with proper colors
+            const heartsSpan = `<span style="color: var(--card-red);">♥${stats.counts.H}</span>`;
+            const diamondsSpan = `<span style="color: var(--card-red);">♦${stats.counts.D}</span>`;
+            const clubsSpan = `<span style="color: var(--card-blue);">♣${stats.counts.C}</span>`;
+            const spadesSpan = `<span style="color: var(--card-blue);">♠${stats.counts.S}</span>`;
+            
+            suitCounts.innerHTML =
+                `${heartsSpan} ${diamondsSpan} ${clubsSpan} ${spadesSpan}`;
+            colorCounts.textContent =
                 `red: ${stats.reds} | black: ${stats.blacks}`;
-            parityCounts.textContent = 
+            parityCounts.textContent =
                 `even: ${stats.evens} | odd: ${stats.odds}`;
             const delta = Math.abs(56 - stats.sum);
-            sumRanks.textContent = 
+            sumRanks.textContent =
                 `sum: ${stats.sum} (Δ from 56: ${delta})`;
         }
 
