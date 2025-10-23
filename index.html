@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>8qsc</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --black: #000;
+            --white: #fff;
+            --gray-dark: #1a1a1a;
+            --gray-mid: #999;
+            --gray-light: #333;
+            --spacing: 16px;
+        }
+
+        body {
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.5;
+            padding: var(--spacing);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            border: 2px solid var(--white);
+            padding: var(--spacing);
+            margin-bottom: var(--spacing);
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--gray-mid);
+            margin-bottom: 12px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 14px;
+            padding: 8px 12px;
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        button.secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .section {
+            border: 2px solid var(--white);
+            padding: var(--spacing);
+            margin-bottom: var(--spacing);
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Card Grid - Fixed 2 columns for mobile */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-slot {
+            border: 2px solid var(--white);
+            padding: 12px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            background: var(--black);
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .card-slot:hover {
+            background: var(--gray-light);
+        }
+
+        .card-slot.active {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .card-slot.has-card {
+            cursor: default;
+        }
+
+        .card-slot.has-card:hover {
+            background: var(--black);
+        }
+
+        .card-display {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .card-display.red {
+            color: var(--white);
+        }
+
+        .card-display.black {
+            color: var(--white);
+        }
+
+        .card-label {
+            font-size: 11px;
+            text-align: center;
+            color: var(--gray-mid);
+        }
+
+        .card-slot.has-card .card-label {
+            color: var(--white);
+        }
+
+        .card-clear {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 11px;
+            padding: 2px 6px;
+            background: var(--black);
+            border: 1px solid var(--white);
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .card-clear:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        /* Floating Keyboard-Style Selector */
+        .selector-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 998;
+            backdrop-filter: blur(2px);
+        }
+
+        .selector-backdrop.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .card-selector {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border: 2px solid var(--white);
+            border-bottom: none;
+            padding: 16px;
+            background: var(--gray-dark);
+            z-index: 999;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-selector.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .selector-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+
+        .suit-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .suit-btn {
+            font-size: 24px;
+            padding: 12px;
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .suit-btn:hover {
+            background: var(--gray-light);
+        }
+
+        .suit-btn.selected {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+        }
+
+        .rank-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .rank-btn {
+            font-size: 14px;
+            padding: 10px 12px;
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            text-align: center;
+            min-width: 60px;
+            flex: 1 1 auto;
+        }
+
+        .rank-btn:hover {
+            background: var(--gray-light);
+        }
+
+        .rank-btn.selected {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+        }
+
+        /* Score Display */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .score-card.total {
+            grid-column: span 3;
+        }
+
+        .score-card {
+            border: 2px solid var(--white);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .score-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            color: var(--gray-mid);
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .score-detail {
+            font-size: 10px;
+            color: var(--gray-mid);
+        }
+
+        /* Stats Display */
+        .stats {
+            font-size: 12px;
+            padding: 8px;
+            border: 1px solid var(--white);
+            background: var(--gray-dark);
+        }
+
+        .stat-line {
+            margin-bottom: 4px;
+        }
+
+        .stat-line:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Warning Messages */
+        .warning {
+            display: none;
+            padding: 8px;
+            border: 2px solid var(--white);
+            background: var(--white);
+            color: var(--black);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .warning.show {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            font-size: 11px;
+            color: var(--gray-mid);
+            text-align: center;
+            padding: var(--spacing);
+            border-top: 1px solid var(--gray-light);
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 480px) {
+            .score-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Safe area for mobile devices */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .card-selector {
+                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>8-quilibrium calculator</h1>
+        <div class="subtitle">
+        </div>
+        <div class="controls">
+            <button class="secondary" id="clearBtn">CLEAR ALL</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="section-title">enter hands</div>
+            <div class="card-grid" id="cardGrid"></div>
+            <div class="warning" id="dupWarning">
+                duplicate detected! are you lying?
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-title">scores</div>
+            <div class="score-grid">
+                <div class="score-card total">
+                    <div class="score-title">total score</div>
+                    <div class="score-value" id="totalScore">—</div>
+                    <div class="score-detail">max 16</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-title">suits</div>
+                    <div class="score-value" id="suitScore">—</div>
+                    <div class="score-detail" id="suitDetail">max 10</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-title">color</div>
+                    <div class="score-value" id="colorScore">—</div>
+                    <div class="score-detail" id="colorDetail">max 3</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-title">parity</div>
+                    <div class="score-value" id="parityScore">—</div>
+                    <div class="score-detail" id="parityDetail">max 3</div>
+                </div>
+            </div>
+            <div class="stats" id="stats">
+                <div class="stat-line" id="suitCounts">♥0 ♦0 ♣0 ♠0</div>
+                <div class="stat-line" id="colorCounts">red: 0 | black: 0</div>
+                <div class="stat-line" id="parityCounts">even: 0 | odd: 0</div>
+                <div class="stat-line" id="sumRanks">sum: 0 (Δ from 56: 56)</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Card Selector Overlay -->
+    <div class="selector-backdrop" id="selectorBackdrop"></div>
+    <div class="card-selector" id="cardSelector">
+        <div class="selector-title">Select Card for Slot <span id="activeSlotNum">1</span></div>
+        <div class="selector-title" style="font-size: 11px; font-weight: normal; margin-top: -4px;">
+            choose a suit and a rank.
+        </div>
+        <div class="suit-selector" id="suitSelector"></div>
+        <div class="rank-selector" id="rankSelector"></div>
+    </div>
+
+    <footer>
+        8 quilibrium is a game by alfa ozaltin.
+    </footer>
+
+    <script>
+        // ===== DATA STRUCTURES =====
+        const SUITS = [
+            { key: 'H', symbol: '♥', name: 'Hearts', color: 'red' },
+            { key: 'D', symbol: '♦', name: 'Diamonds', color: 'red' },
+            { key: 'C', symbol: '♣', name: 'Clubs', color: 'black' },
+            { key: 'S', symbol: '♠', name: 'Spades', color: 'black' }
+        ];
+
+        const RANKS = [
+            { key: 'A', display: 'A', value: 1, even: false },
+            { key: '2', display: '2', value: 2, even: true },
+            { key: '3', display: '3', value: 3, even: false },
+            { key: '4', display: '4', value: 4, even: true },
+            { key: '5', display: '5', value: 5, even: false },
+            { key: '6', display: '6', value: 6, even: true },
+            { key: '7', display: '7', value: 7, even: false },
+            { key: '8', display: '8', value: 8, even: true },
+            { key: '9', display: '9', value: 9, even: false },
+            { key: '10', display: '10', value: 10, even: true },
+            { key: 'J', display: 'J', value: 11, even: false },
+            { key: 'Q', display: 'Q', value: 12, even: true },
+            { key: 'K', display: 'K', value: 13, even: false }
+        ];
+
+        const suitMap = Object.fromEntries(SUITS.map(s => [s.key, s]));
+        const rankMap = Object.fromEntries(RANKS.map(r => [r.key, r]));
+
+        // ===== STATE =====
+        let hand = Array(8).fill(null);
+        let activeSlotIndex = null;
+        let selectedSuit = null;
+        let selectedRank = null;
+
+        // ===== DOM ELEMENTS =====
+        const cardGrid = document.getElementById('cardGrid');
+        const cardSelector = document.getElementById('cardSelector');
+        const selectorBackdrop = document.getElementById('selectorBackdrop');
+        const suitSelector = document.getElementById('suitSelector');
+        const rankSelector = document.getElementById('rankSelector');
+        const activeSlotNum = document.getElementById('activeSlotNum');
+        const dupWarning = document.getElementById('dupWarning');
+        const randomBtn = document.getElementById('randomBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Score elements
+        const totalScore = document.getElementById('totalScore');
+        const suitScore = document.getElementById('suitScore');
+        const suitDetail = document.getElementById('suitDetail');
+        const colorScore = document.getElementById('colorScore');
+        const colorDetail = document.getElementById('colorDetail');
+        const parityScore = document.getElementById('parityScore');
+        const parityDetail = document.getElementById('parityDetail');
+        const suitCounts = document.getElementById('suitCounts');
+        const colorCounts = document.getElementById('colorCounts');
+        const parityCounts = document.getElementById('parityCounts');
+        const sumRanks = document.getElementById('sumRanks');
+
+        // ===== INITIALIZATION =====
+        function init() {
+            createCardSlots();
+            createSuitSelector();
+            createRankSelector();
+            attachEventListeners();
+            updateDisplay();
+        }
+
+        function createCardSlots() {
+            cardGrid.innerHTML = '';
+            for (let i = 0; i < 8; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'card-slot';
+                slot.dataset.index = i;
+                slot.innerHTML = `
+                    <div class="card-display">—</div>
+                    <div class="card-label">Slot ${i + 1}</div>
+                `;
+                slot.addEventListener('click', () => openSelector(i));
+                cardGrid.appendChild(slot);
+            }
+        }
+
+        function createSuitSelector() {
+            suitSelector.innerHTML = '';
+            SUITS.forEach(suit => {
+                const btn = document.createElement('button');
+                btn.className = 'suit-btn';
+                btn.dataset.suit = suit.key;
+                btn.textContent = suit.symbol;
+                btn.title = suit.name;
+                btn.addEventListener('click', () => selectSuit(suit.key));
+                suitSelector.appendChild(btn);
+            });
+        }
+
+        function createRankSelector() {
+            rankSelector.innerHTML = '';
+            // First row: 2-10 (numbers only, no Ace)
+            const numberRanks = RANKS.filter(r => ['2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(r.key));
+            // Second row: A, J, Q, K (Ace with face cards)
+            const faceRanks = RANKS.filter(r => ['A', 'J', 'Q', 'K'].includes(r.key));
+            
+            // Render number ranks first
+            numberRanks.forEach(rank => {
+                const btn = document.createElement('button');
+                btn.className = 'rank-btn';
+                btn.dataset.rank = rank.key;
+                btn.textContent = rank.display;
+                btn.addEventListener('click', () => selectRank(rank.key));
+                rankSelector.appendChild(btn);
+            });
+            
+            // Add visual divider between number cards and face cards
+            const divider = document.createElement('div');
+            divider.style.flexBasis = '100%';
+            divider.style.height = '0';
+            divider.style.borderTop = '1px solid white';
+            divider.style.margin = '8px 0';
+            rankSelector.appendChild(divider);
+            
+            // Then render face ranks
+            faceRanks.forEach(rank => {
+                const btn = document.createElement('button');
+                btn.className = 'rank-btn';
+                btn.dataset.rank = rank.key;
+                btn.textContent = rank.display;
+                btn.addEventListener('click', () => selectRank(rank.key));
+                rankSelector.appendChild(btn);
+            });
+        }
+
+        function attachEventListeners() {
+            randomBtn.addEventListener('click', generateRandomHand);
+            clearBtn.addEventListener('click', clearAllCards);
+            selectorBackdrop.addEventListener('click', closeSelector);
+        }
+
+        // ===== CARD SELECTION =====
+        function openSelector(index) {
+            // Don't open selector if card already exists (use clear button instead)
+            if (hand[index]) return;
+
+            activeSlotIndex = index;
+            selectedSuit = null;
+            selectedRank = null;
+            
+            // Update active slot display
+            activeSlotNum.textContent = index + 1;
+            
+            // Show selector and backdrop
+            cardSelector.classList.add('active');
+            selectorBackdrop.classList.add('active');
+            
+            // Update slot visual
+            document.querySelectorAll('.card-slot').forEach(slot => {
+                slot.classList.remove('active');
+            });
+            document.querySelector(`[data-index="${index}"]`).classList.add('active');
+            
+            // Reset selections
+            updateSelectorButtons();
+            
+            // Prevent body scroll when selector is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSelector() {
+            cardSelector.classList.remove('active');
+            selectorBackdrop.classList.remove('active');
+            activeSlotIndex = null;
+            selectedSuit = null;
+            selectedRank = null;
+            
+            // Re-enable body scroll
+            document.body.style.overflow = '';
+            
+            // Clear active slot visual
+            document.querySelectorAll('.card-slot').forEach(slot => {
+                slot.classList.remove('active');
+            });
+        }
+
+        function selectSuit(suitKey) {
+            selectedSuit = suitKey;
+            updateSelectorButtons();
+        }
+
+        function selectRank(rankKey) {
+            if (!selectedSuit) {
+                // Flash the suit selector to indicate suit must be selected first
+                suitSelector.style.animation = 'none';
+                setTimeout(() => {
+                    suitSelector.style.animation = '';
+                }, 10);
+                return;
+            }
+            
+            selectedRank = rankKey;
+            
+            // Set the card
+            hand[activeSlotIndex] = {
+                suit: selectedSuit,
+                rank: selectedRank
+            };
+            
+            // Close selector
+            closeSelector();
+            
+            // Update display
+            updateDisplay();
+        }
+
+        function updateSelectorButtons() {
+            // Update suit buttons
+            document.querySelectorAll('.suit-btn').forEach(btn => {
+                if (btn.dataset.suit === selectedSuit) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+            
+            // Update rank buttons
+            document.querySelectorAll('.rank-btn').forEach(btn => {
+                if (btn.dataset.rank === selectedRank) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        function clearCard(index) {
+            hand[index] = null;
+            updateDisplay();
+        }
+
+        function clearAllCards() {
+            hand = Array(8).fill(null);
+            closeSelector();
+            updateDisplay();
+        }
+
+        // ===== DISPLAY UPDATE =====
+        function updateDisplay() {
+            updateCardSlots();
+            updateScores();
+            checkDuplicates();
+        }
+
+        function updateCardSlots() {
+            document.querySelectorAll('.card-slot').forEach((slot, index) => {
+                const card = hand[index];
+                const display = slot.querySelector('.card-display');
+                const label = slot.querySelector('.card-label');
+                
+                // Remove existing clear button if any
+                const existingClear = slot.querySelector('.card-clear');
+                if (existingClear) existingClear.remove();
+                
+                if (card) {
+                    const suit = suitMap[card.suit];
+                    const rank = rankMap[card.rank];
+                    
+                    display.textContent = `${suit.symbol}${rank.display}`;
+                    display.className = `card-display ${suit.color}`;
+                    label.textContent = `${suit.name} ${rank.display}`;
+                    slot.classList.add('has-card');
+                    
+                    // Add clear button
+                    const clearBtn = document.createElement('button');
+                    clearBtn.className = 'card-clear';
+                    clearBtn.textContent = '✕';
+                    clearBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        clearCard(index);
+                    });
+                    slot.appendChild(clearBtn);
+                } else {
+                    display.textContent = '—';
+                    display.className = 'card-display';
+                    label.textContent = `Slot ${index + 1}`;
+                    slot.classList.remove('has-card');
+                }
+            });
+        }
+
+        function checkDuplicates() {
+            const seen = new Set();
+            let hasDuplicate = false;
+            
+            for (const card of hand) {
+                if (card) {
+                    const key = `${card.suit}-${card.rank}`;
+                    if (seen.has(key)) {
+                        hasDuplicate = true;
+                        break;
+                    }
+                    seen.add(key);
+                }
+            }
+            
+            if (hasDuplicate) {
+                dupWarning.classList.add('show');
+            } else {
+                dupWarning.classList.remove('show');
+            }
+        }
+
+        // ===== SCORING =====
+        function updateScores() {
+            const cards = hand.filter(c => c !== null);
+            
+            if (cards.length !== 8) {
+                // Partial hand - show partial stats but no scores
+                updatePartialStats(cards);
+                totalScore.textContent = '—';
+                suitScore.textContent = '—';
+                colorScore.textContent = '—';
+                parityScore.textContent = '—';
+                suitDetail.textContent = 'Need 8 cards';
+                colorDetail.textContent = 'Need 8 cards';
+                parityDetail.textContent = 'Need 8 cards';
+                return;
+            }
+            
+            // Full hand - calculate everything
+            const stats = calculateStats(cards);
+            const scores = calculateScores(stats);
+            
+            // Update scores
+            totalScore.textContent = scores.total;
+            suitScore.textContent = scores.suit;
+            colorScore.textContent = scores.color;
+            parityScore.textContent = scores.parity;
+            
+            // Update details
+            suitDetail.textContent = scores.suitPerfect ? 
+                'Perfect 2,2,2,2 (+2)' : 
+                `Base ${scores.suitBase}`;
+            colorDetail.textContent = `Reds ${stats.reds}`;
+            parityDetail.textContent = `Evens ${stats.evens}`;
+            
+            // Update stats
+            updateStatsDisplay(stats);
+        }
+
+        function updatePartialStats(cards) {
+            const stats = calculateStats(cards);
+            updateStatsDisplay(stats);
+        }
+
+        function calculateStats(cards) {
+            const counts = { H: 0, D: 0, C: 0, S: 0 };
+            let reds = 0;
+            let blacks = 0;
+            let evens = 0;
+            let odds = 0;
+            let sum = 0;
+            
+            for (const card of cards) {
+                counts[card.suit]++;
+                const suit = suitMap[card.suit];
+                const rank = rankMap[card.rank];
+                
+                if (suit.color === 'red') reds++;
+                else blacks++;
+                
+                if (rank.even) evens++;
+                else odds++;
+                
+                sum += rank.value;
+            }
+            
+            return { counts, reds, blacks, evens, odds, sum };
+        }
+
+        function calculateScores(stats) {
+            // Suit score: base 8 - sum of deviations from 2, +2 bonus if perfect
+            const suitDiff = 
+                Math.abs(stats.counts.H - 2) +
+                Math.abs(stats.counts.D - 2) +
+                Math.abs(stats.counts.C - 2) +
+                Math.abs(stats.counts.S - 2);
+            const suitBase = Math.max(0, 8 - suitDiff);
+            const suitPerfect = 
+                stats.counts.H === 2 && 
+                stats.counts.D === 2 && 
+                stats.counts.C === 2 && 
+                stats.counts.S === 2;
+            const suit = suitBase + (suitPerfect ? 2 : 0);
+            
+            // Color score: max(0, 3 - |reds - 4|)
+            const color = Math.max(0, 3 - Math.abs(stats.reds - 4));
+            
+            // Parity score: max(0, 3 - |evens - 4|)
+            const parity = Math.max(0, 3 - Math.abs(stats.evens - 4));
+            
+            const total = suit + color + parity;
+            
+            return { total, suit, suitBase, suitPerfect, color, parity };
+        }
+
+        function updateStatsDisplay(stats) {
+            suitCounts.textContent = 
+                `♥${stats.counts.H} ♦${stats.counts.D} ♣${stats.counts.C} ♠${stats.counts.S}`;
+            colorCounts.textContent = 
+                `red: ${stats.reds} | black: ${stats.blacks}`;
+            parityCounts.textContent = 
+                `even: ${stats.evens} | odd: ${stats.odds}`;
+            const delta = Math.abs(56 - stats.sum);
+            sumRanks.textContent = 
+                `sum: ${stats.sum} (Δ from 56: ${delta})`;
+        }
+
+        // ===== UTILITIES =====
+        function generateRandomHand() {
+            // Create full deck
+            const deck = [];
+            for (const suit of SUITS) {
+                for (const rank of RANKS) {
+                    deck.push({ suit: suit.key, rank: rank.key });
+                }
+            }
+            
+            // Shuffle
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+            
+            // Take first 8
+            hand = deck.slice(0, 8);
+            
+            // Close selector if open
+            closeSelector();
+            
+            updateDisplay();
+        }
+
+        // ===== START =====
+        init();
+    </script>
+</body>
+</html>
